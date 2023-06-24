@@ -109,7 +109,7 @@ def train1(num_epochs, model, loaders):
     
 
 
-def test(model, epos):
+def test(model, epos, my_id):
     model.eval()
     test_loss = 0
     correct = 0
@@ -129,10 +129,11 @@ def test(model, epos):
                 fig.suptitle('First two images in Batch 0 [%d epochs]' % epos)
             i += 1
         test_loss /= len(loaders['test'].dataset)
-        print('\nTest set: Avg. loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
-          test_loss, correct, len(loaders['test'].dataset),
-          100. * correct / len(loaders['test'].dataset)))
-        plt.show()
+        per = 100. * correct / len(loaders['test'].dataset)
+        print('\nModel {:d} Test set: Avg. loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
+          my_id,test_loss, correct, len(loaders['test'].dataset),   per))
+        fig.suptitle('Model %d First two images in Batch 0 [%d epochs] Accu: %.2f' % (my_id, epos, per))
+    plt.savefig('Pred_by_model_%d.jpg' % my_id)
 
 class CNN(nn.Module):  # MODEL 2
     def __init__(self):
@@ -239,9 +240,7 @@ if __name__ == '__main__':
 
     model1 = Net()  # Case 1: Full Connected (dense matrix)
     model2 = CNN()  # Case 2: Convolutional  (sparse matrix)
-    learning_rate = 0.001
-    optimizer = optim.Adam(model2.parameters(), lr = learning_rate)   
-    optimizer
+    
     Which = input("Choose model to train (test) 1 for FCN or 2 for CNN : ")
     ID = int(  Which )
 # Train:
@@ -250,12 +249,16 @@ if __name__ == '__main__':
     if ID==1:
         loss_func = nn.NLLLoss()   
         model = model1
+        learning_rate = 0.01
+        optimizer = optim.Adam(model1.parameters(), lr = learning_rate)   
         train1(num_epochs, model, loaders)
     else:
         model = model2
+        learning_rate = 0.001
+        optimizer = optim.Adam(model2.parameters(), lr = learning_rate)   
         loss_func = nn.CrossEntropyLoss()
         train2(num_epochs, model, loaders)
-    loss_func
+    loss_func;     optimizer
     end_time = time.time()
     if use_cuda:
         nvmlInit()
@@ -274,4 +277,5 @@ if __name__ == '__main__':
     #  output = model2(im,plot=True)
 
     # test to see the prediction
-    test(model, num_epochs)
+    test(model, num_epochs,ID)
+    plt.pause(5)
