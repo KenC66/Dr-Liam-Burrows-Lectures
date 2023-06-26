@@ -6,3 +6,5 @@ HERE
 Liam1.py is a plain python file to do the same code using two models (FCN / CNN)
     demo for biginners... (essentially the same as https://github.com/LRB13/CMIT_Lectures_2023/blob/main/lec1_2023.ipynb)
 
+Lec2_2023.py is also a plain python file for segmentation of retina images by UNET
+Lec2_denoise.py is a plain python file for image noise removal by CNN (Lecture 1/2)
